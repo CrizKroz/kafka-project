@@ -10,6 +10,6 @@ export const mongoConfig = {
   // Configuración de Kafka
   export const kafkaConfig = {
     clientId: 'my-app',
-    brokers: [process.env.KAFKA_URI || 'localhost:9092'],
+    brokers: ['20.71.12.149:9094'],
   };
   
