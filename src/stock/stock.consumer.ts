@@ -15,10 +15,30 @@ export class StockConsumer implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this._consumer.consume(
-      'tpc-nca-stock',
+    // this._consumer.consume(
+    //   'tpc-nca-stock',
+    //   {
+    //     topic: topics.tpc_nca_stock,
+    //   },
+    //   {
+    //     eachMessage: async ({ topic, partition, message }) => {
+    //       const messageString = message.value.toString();
+    //       const messageObj: IStock = JSON.parse(messageString);
+
+    //       const { data } = messageObj;
+        
+    //       await this.logicData(data);
+    //     },
+    //   },
+    // );
+    
+  }
+
+  async initConsumer(groupId:string, topic:string){
+    await this._consumer.consume(
+      groupId,
       {
-        topic: topics.tpc_nca_stock,
+        topic: topic,
       },
       {
         eachMessage: async ({ topic, partition, message }) => {
@@ -26,14 +46,35 @@ export class StockConsumer implements OnModuleInit {
           const messageObj: IStock = JSON.parse(messageString);
 
           const { data } = messageObj;
-
-        console.log(data);
-        
           await this.logicData(data);
         },
       },
     );
   }
+
+  async initConsumerBatch(groupId:string, topic:string){
+    await this._consumer.consume(
+      groupId,
+      {
+        topic: topic,
+      },
+      {
+       eachBatch: async ({batch, resolveOffset, heartbeat}) => {
+        console.log(`Procesando batch con ${batch.messages.length} mensajes`);
+        const batchStartTime = new Date().getTime();
+        for (const message of batch.messages) {
+          const messageString = message.value.toString();
+          const messageObj: any = JSON.parse(messageString);
+          //await this.logicData(data);
+        }
+        const batchEndTime = new Date().getTime();
+        console.log(`Batch procesado en ${batchEndTime - batchStartTime} ms`);
+        await resolveOffset(batch.lastOffset());
+       }
+      },
+    );
+}
+
 
   async logicData(data: Data) {
     const { C_MATERIAL, C_ID_MATERIAL, C_ESTADO, CuentaStokAcanalados } = data;
@@ -55,4 +96,6 @@ export class StockConsumer implements OnModuleInit {
       );
     }
   }
+
+  
 }
