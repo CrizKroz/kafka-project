@@ -1,6 +1,6 @@
 {
     "variablesEntorno": {
-        "MONGODB_URI": "mongodb://localhost:2000",
+        "MONGODB_URI": "mongodb://localhost:27017",
         "KAFKA_URI": "localhost:29092",
         "PORT": "2023"
     }
