@@ -1,19 +1,11 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-<<<<<<< HEAD
 import { ConsumerSubscribeTopic } from 'kafkajs';
 import { StockDTO } from './dtos/stock.dto';
 import { StockConsumer } from './stock.consumer';
 import { StockService } from './stock.service';
 import { ConsumerService } from '../kafka/consumer/consumer.service';
 
-=======
-import { get } from 'http';
-import { StockDTO } from './dtos/stock.dto';
-import { StockConsumer } from './stock.consumer';
-import { StockService } from './stock.service';
-//CLASE QUE EXPONE LA API 
->>>>>>> 1960e6f47939076eedbed4d47d0588d525751789
 @ApiTags('Stock')
 @Controller('stock')
 export class StockController {
