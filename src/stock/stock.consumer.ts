@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { StockDocument } from 'libs/helpers/src';
 import { Data, IStock } from './interfaces/stock.interface';
 import {StockEnum as topics} from './constants/stock.enum'
+import { Console } from 'console';
 @Injectable()
 export class StockConsumer implements OnModuleInit {
   constructor(
@@ -46,6 +47,9 @@ export class StockConsumer implements OnModuleInit {
           const messageObj: IStock = JSON.parse(messageString);
 
           const { data } = messageObj;
+          
+        console.log(data);
+        
           await this.logicData(data);
         },
       },
@@ -78,7 +82,7 @@ export class StockConsumer implements OnModuleInit {
 
   async logicData(data: Data) {
     const { C_MATERIAL, C_ID_MATERIAL, C_ESTADO, CuentaStokAcanalados } = data;
-
+    console.log("LOGDEPRUEBA",C_MATERIAL );
 
     if (C_ESTADO === 'EN11' || CuentaStokAcanalados === 'NO') {
       await this.repository.findOneAndDelete({ C_MATERIAL: C_MATERIAL });
@@ -97,5 +101,14 @@ export class StockConsumer implements OnModuleInit {
     }
   }
 
-  
+  async searchMessage(c_id_material: number){
+    
+    let myCollection =await this.repository.findOne({C_ID_MATERIAL:c_id_material}); 
+    return myCollection;
+  }
+
+  async countMessage(){
+    let count = await this.repository.count({});
+    return count;
+  }
 }

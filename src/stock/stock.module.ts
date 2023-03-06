@@ -17,7 +17,7 @@ import { mongoConfig } from './constants/variables.entorno';
     }),
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get('MONGODB_URI'),
+        uri: process.env.MONGODB_URI,
         autoIndex: true,
         maxPoolSize: 10,
         serverSelectionTimeoutMS: 5000,

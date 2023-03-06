@@ -8,7 +8,7 @@ export class ConsumerService implements OnApplicationShutdown {
 
   private readonly kafka = new Kafka({
     requestTimeout: 30000,
-    brokers: [kafkaConfig.brokers[0]]
+    brokers: [process.env.KAFKA_URI]
   });
 
   private readonly consumers: Consumer[] = [];
