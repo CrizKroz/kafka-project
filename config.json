@@ -1,7 +1,7 @@
 {
     "variablesEntorno": {
-        "MONGODB_URI": "mongodb://localhost:27017",
-        "KAFKA_URI": "localhost:29092",
+        "MONGODB_URI": "mongodb+srv://krosty:krosty@cluster0.lsrlv.mongodb.net/?retryWrites=true&w=majority",
+        "KAFKA_URI": "20.103.19.164:9094",
         "PORT": "2023"
     }
 }

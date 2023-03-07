@@ -7,7 +7,6 @@ import { StockController } from './stock.controller';
 import { StockService } from './stock.service';
 import { StockConsumer } from './stock.consumer';
 import { ConsumerService } from '../kafka/consumer/consumer.service';
-import { mongoConfig } from './constants/variables.entorno';
 
 @Module({
   imports:[

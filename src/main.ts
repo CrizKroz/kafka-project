@@ -1,9 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import * as morgan from 'morgan';
 import * as fs from 'fs';
-import * as dotenv from 'dotenv';
 
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 

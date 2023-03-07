@@ -1,6 +1,5 @@
 import { Injectable, OnApplicationShutdown, Logger } from '@nestjs/common';
 import { Consumer, Kafka, ConsumerSubscribeTopic, ConsumerRunConfig, AssignerProtocol } from 'kafkajs';
-import { kafkaConfig } from 'src/stock/constants/variables.entorno';
 
 @Injectable()
 export class ConsumerService implements OnApplicationShutdown {

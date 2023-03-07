@@ -1,6 +1,5 @@
 import { Injectable, OnModuleInit, OnApplicationShutdown } from '@nestjs/common';
 import { Kafka, Producer, ProducerRecord } from 'kafkajs';
-import { kafkaConfig } from 'src/stock/constants/variables.entorno';
 
 @Injectable()
 export class ProducerService implements OnModuleInit, OnApplicationShutdown{
@@ -15,7 +14,7 @@ export class ProducerService implements OnModuleInit, OnApplicationShutdown{
 
     private readonly kafka = new Kafka({
         requestTimeout:30000,
-        brokers:[kafkaConfig.brokers[0]]
+        brokers:[process.env.KAFKA_URI]
     });
 
     private readonly producer:Producer = this.kafka.producer();
