@@ -6,10 +6,10 @@ import * as fs from 'fs';
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 
 // Carga las variables de entorno del archivo de configuración JSON
-process.env.MONGODB_URI = config.variablesEntorno.MONGODB_URI;
-process.env.KAFKA_URI = config.variablesEntorno.KAFKA_URI;
-process.env.PORT = config.variablesEntorno.PORT;
-console.log(process.env.MONGODB_URI, process.env.KAFKA_URI, process.env.PORT);
+process.env.MONGODB_URI = config.enviroments.MONGODB_URI;
+process.env.KAFKA_URI = config.enviroments.KAFKA_URI;
+process.env.PORT = config.enviroments.PORT;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   

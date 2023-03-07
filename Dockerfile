@@ -12,7 +12,7 @@ RUN npm install
 RUN npm install webpack -g
 
 
-# Expone el puerto 3000
+# Expone el puerto 2023
 EXPOSE 2023
 
 # Inicia la aplicación

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: microservice-documenters-ternium
+  namespace: agentes
+  labels:
+    app: api-microservice-documenters
+    version: 0.0.1
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-microservice-project
+  serviceName: "kafka-microservice-project"
+  template:
+    metadata:
+      labels:
+        app: kafka-microservice-project
+    spec:
+      containers:
+        - name: kafka-microservice-project
+          image: kafka-microservice-project:0.0.1
+          ports:
+          - containerPort: 2023
+          env:
+          - name: HOST_MASTER
+            value: kafka-microservice-project-0
+          - name: SPRING_PROFILE
+            value: prod
+          - name: SPRING_APPLICATION_JSON
+            valueFrom:
+              configMapKeyRef:
+                name: cfgmicroservicedocumenters
+                key: config.json

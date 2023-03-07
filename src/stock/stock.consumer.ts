@@ -23,12 +23,15 @@ export class StockConsumer implements OnModuleInit {
       },
       {
         eachMessage: async ({ topic, partition, message }) => {
+          const startTime = performance.now();
           const messageString = message.value.toString();
           const messageObj: IStock = JSON.parse(messageString);
 
           const { data } = messageObj;
-          console.log(data);
           await this.logicData(data);
+          const endTime = performance.now();
+          const elapsedTime = endTime - startTime;
+          console.log(`Tiempo transcurrido: ${elapsedTime} ms`);
         },
       },
     );
