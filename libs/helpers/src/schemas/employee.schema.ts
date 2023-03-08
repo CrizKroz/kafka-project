@@ -93,8 +93,8 @@ class dataInventario {
 }
 
 class data {
-  @Prop({ type: Number })
-  C_ID_MATERIAL: number;
+  @Prop({ type: String })
+  C_ID_MATERIAL: string;
   @Prop({ type: String })
   C_MATERIAL: string;
   @Prop({ type: dataInventario })

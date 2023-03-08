@@ -23,10 +23,9 @@ export class StockConsumer implements OnModuleInit {
       },
       {
         eachMessage: async ({ topic, partition, message }) => {
-          this.logger.log(`se recibio mensaje de topic ${topic}`);
           const messageString = message.value.toString();
           const messageObj: IStock = JSON.parse(messageString);
-
+          this.logger.log(`se recibio mensaje con C_MATERIAL: ${messageObj.data.C_MATERIAL}`);
           const { data } = messageObj;
           await this.logicData(data);
         },
@@ -60,8 +59,8 @@ export class StockConsumer implements OnModuleInit {
 
 
   async logicData(data: Data) {
-    const { C_MATERIAL, C_ID_MATERIAL, C_ESTADO, CuentaStokAcanalados } = data;
-
+    const {C_MATERIAL, C_ESTADO, CuentaStokAcanalados } = data;
+    let {C_ID_MATERIAL} = data
     if (C_ESTADO === 'EN11' || CuentaStokAcanalados === 'NO') {
       await this.repository.findOneAndDelete({ "data.C_MATERIAL":C_MATERIAL });
     } else {
@@ -71,7 +70,7 @@ export class StockConsumer implements OnModuleInit {
           $set: {
             "_id":C_MATERIAL,
             "data.C_MATERIAL":C_MATERIAL,
-            "data.C_ID_MATERIAL":C_ID_MATERIAL,
+            "data.C_ID_MATERIAL":C_ID_MATERIAL.toString(),
             "data.data_Inventario":data
             // C_MATERIAL: C_MATERIAL,
             // C_ID_MATERIAL: C_ID_MATERIAL,
