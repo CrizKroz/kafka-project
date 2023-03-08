@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common/decorators';
-import { OnModuleInit } from '@nestjs/common';
+import { Logger, OnModuleInit } from '@nestjs/common';
 import { ConsumerService } from '../kafka/consumer/consumer.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StockDocument } from 'libs/helpers/src';
 import { Data, IStock } from './interfaces/stock.interface';
 import {StockEnum as topics} from './constants/stock.enum'
-import { Console } from 'console';
 @Injectable()
 export class StockConsumer implements OnModuleInit {
+  private readonly logger = new Logger(ConsumerService.name);
   constructor(
     private _consumer: ConsumerService,
     @InjectModel(StockDocument.name)
@@ -23,15 +23,12 @@ export class StockConsumer implements OnModuleInit {
       },
       {
         eachMessage: async ({ topic, partition, message }) => {
-          const startTime = performance.now();
+          this.logger.log(`se recibio mensaje de topic ${topic}`);
           const messageString = message.value.toString();
           const messageObj: IStock = JSON.parse(messageString);
 
           const { data } = messageObj;
           await this.logicData(data);
-          const endTime = performance.now();
-          const elapsedTime = endTime - startTime;
-          console.log(`Tiempo transcurrido: ${elapsedTime} ms`);
         },
       },
     );

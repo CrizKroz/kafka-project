@@ -43,3 +43,8 @@ spec:
                 configMapKeyRef:
                   name: cfgmicroservicedocumenters002
                   key: PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: cfgmicroservicedocumenters002
+                  key: DB_NAME

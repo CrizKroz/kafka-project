@@ -1,14 +1,17 @@
-import { Injectable, OnApplicationShutdown, Logger } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Consumer, Kafka, ConsumerSubscribeTopic, ConsumerRunConfig, AssignerProtocol } from 'kafkajs';
 
 @Injectable()
-export class ConsumerService implements OnApplicationShutdown {
+export class ConsumerService implements OnApplicationShutdown, OnModuleInit{
   constructor(private configService: ConfigService) {}
 
   private readonly logger = new Logger(ConsumerService.name);
   private readonly KAFKA_URI = this.configService.get('KAFKA_URI');
   
+  async onModuleInit() {
+      this.logger.log(`Kafka URL: ${this.KAFKA_URI}`)
+  }
   private readonly kafka = new Kafka({
     requestTimeout: 30000,
     brokers: [this.KAFKA_URI]
