@@ -17,6 +17,7 @@ import { ConsumerService } from '../kafka/consumer/consumer.service';
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         uri: process.env.MONGODB_URI,
+        dbName:'Ternium',
         autoIndex: true,
         maxPoolSize: 10,
         serverSelectionTimeoutMS: 5000,

@@ -16,25 +16,25 @@ export class StockConsumer implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this._consumer.consume(
-      'tpc-nca-stock',
-      {
-        topic: topics.tpc_nca_stock,
-      },
-      {
-        eachMessage: async ({ topic, partition, message }) => {
-          const startTime = performance.now();
-          const messageString = message.value.toString();
-          const messageObj: IStock = JSON.parse(messageString);
+    // this._consumer.consume(
+    //   'tpc-nca-stock',
+    //   {
+    //     topic: topics.tpc_nca_stock,
+    //   },
+    //   {
+    //     eachMessage: async ({ topic, partition, message }) => {
+    //       const startTime = performance.now();
+    //       const messageString = message.value.toString();
+    //       const messageObj: IStock = JSON.parse(messageString);
 
-          const { data } = messageObj;
-          await this.logicData(data);
-          const endTime = performance.now();
-          const elapsedTime = endTime - startTime;
-          console.log(`Tiempo transcurrido: ${elapsedTime} ms`);
-        },
-      },
-    );
+    //       const { data } = messageObj;
+    //       await this.logicData(data);
+    //       const endTime = performance.now();
+    //       const elapsedTime = endTime - startTime;
+    //       console.log(`Tiempo transcurrido: ${elapsedTime} ms`);
+    //     },
+    //   },
+    // );
     
   }
 
@@ -58,6 +58,29 @@ export class StockConsumer implements OnModuleInit {
       },
     );
   }
+
+  async initConsumerBatch(groupId:string, topic:string){
+    await this._consumer.consume(
+      groupId,
+      {
+        topic: topic,
+      },
+      {
+       eachBatch: async ({batch, resolveOffset, heartbeat}) => {
+        console.log(`Procesando batch con ${batch.messages.length} mensajes`);
+        const batchStartTime = new Date().getTime();
+        for (const message of batch.messages) {
+          const messageString = message.value.toString();
+          const messageObj: any = JSON.parse(messageString);
+          await this.logicData(messageObj);
+        }
+        const batchEndTime = new Date().getTime();
+        console.log(`Batch procesado en ${batchEndTime - batchStartTime} ms`);
+        await resolveOffset(batch.lastOffset());
+       }
+      },
+    );
+}
 
 
 
