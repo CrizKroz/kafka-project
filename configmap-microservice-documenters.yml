@@ -1,16 +1,11 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: cfgmicroservicedocumenters
+  name: cfgmicroservicedocumenters002
   namespace: default
   labels:
-    version: 0.0.1
-data:
-  config.json: 
-    '{
-      "enviroments": {
-        "MONGODB_URI": "mongodb+srv://krosty:krosty@cluster0.lsrlv.mongodb.net/?retryWrites=true&w=majority",
-        "KAFKA_URI": "20.103.19.164:9094",
-        "PORT": "2023"
-      }
-    }'
+    version: 0.0.2
+data: 
+  MONGODB_URI: "mongodb+srv://krosty:krosty@cluster0.lsrlv.mongodb.net/?retryWrites=true&w=majority"
+  KAFKA_URI: "20.103.19.164:9094"
+  PORT: "2023"

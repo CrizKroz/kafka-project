@@ -1,9 +1,12 @@
 import { Injectable, OnModuleInit, OnApplicationShutdown } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Kafka, Producer, ProducerRecord } from 'kafkajs';
 
 @Injectable()
 export class ProducerService implements OnModuleInit, OnApplicationShutdown{
+    constructor(private configService: ConfigService) {}
 
+    private readonly KAFKA_URI = this.configService.get('KAFKA_URI');
     async onModuleInit() {
         await this.producer.connect();
     }
@@ -14,7 +17,7 @@ export class ProducerService implements OnModuleInit, OnApplicationShutdown{
 
     private readonly kafka = new Kafka({
         requestTimeout:30000,
-        brokers:[process.env.KAFKA_URI]
+        brokers:[this.KAFKA_URI]
     });
 
     private readonly producer:Producer = this.kafka.producer();
