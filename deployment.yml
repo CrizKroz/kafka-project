@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: microservice-documenters-ternium
-  namespace: agentes
+  namespace: default
   labels:
     app: api-microservice-documenters
     version: 0.0.1
@@ -12,7 +12,7 @@ spec:
   selector:
     matchLabels:
       app: kafka-microservice-project
-  serviceName: "kafka-microservice-project"
+  serviceName: "kafka-microservice-project-service"
   template:
     metadata:
       labels:
@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: kafka-microservice-project
-          image: kafka-microservice-project:0.0.1
+          image: documenters-consumers-microservice:0.0.1
           ports:
           - containerPort: 2023
           env:

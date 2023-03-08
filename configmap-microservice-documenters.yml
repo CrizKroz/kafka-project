@@ -2,7 +2,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: cfgmicroservicedocumenters
-  namespace: agentes
+  namespace: default
   labels:
     version: 0.0.1
 data:
@@ -12,5 +12,5 @@ data:
         "MONGODB_URI": "mongodb+srv://krosty:krosty@cluster0.lsrlv.mongodb.net/?retryWrites=true&w=majority",
         "KAFKA_URI": "20.103.19.164:9094",
         "PORT": "2023"
-    }
-}'
+      }
+    }'

@@ -2,13 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as fs from 'fs';
+import * as yaml from 'yaml';
 
-const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-
-// Carga las variables de entorno del archivo de configuración JSON
-process.env.MONGODB_URI = config.enviroments.MONGODB_URI;
-process.env.KAFKA_URI = config.enviroments.KAFKA_URI;
-process.env.PORT = config.enviroments.PORT;
+const yamlConfig = yaml.parse(fs.readFileSync('configmap-microservice-documenters.yml', 'utf8'));
+const configJson = JSON.parse(yamlConfig['data']['config.json']);
+// Carga las variables de entorno del archivo de configuración YML
+process.env.MONGODB_URI = configJson.enviroments.MONGODB_URI;
+process.env.KAFKA_URI = configJson.enviroments.KAFKA_URI;
+process.env.PORT = configJson.enviroments.PORT;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
