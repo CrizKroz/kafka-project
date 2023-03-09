@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
-
-
 class data {
   @Prop({ type: String })
   C_ID_MATERIAL: string;
@@ -18,6 +16,7 @@ class data {
 export class StockDocument extends Document {
   @Prop({ required: true, unique: false })
   _id: string;
+  
   @Prop({ type: data })
   data: data;
   
@@ -26,3 +25,7 @@ export class StockDocument extends Document {
 }
 
 export const StockSchema = SchemaFactory.createForClass(StockDocument);
+
+StockSchema.pre('findOneAndUpdate', function () {
+  this.set({ timestamp: Date.now() });
+});
