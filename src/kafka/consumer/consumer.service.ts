@@ -20,14 +20,13 @@ export class ConsumerService implements OnApplicationShutdown, OnModuleInit{
   private readonly consumers: Consumer[] = [];
 
   async consume(groupId: string, topic: ConsumerSubscribeTopic, config: ConsumerRunConfig) {
-    const consumer: Consumer = this.kafka.consumer({ groupId: groupId });
+    const consumer: Consumer = this.kafka.consumer({ groupId: groupId});
 
     try {
       await consumer.connect();
       await consumer.subscribe(topic);
       await consumer.run(config);
       this.consumers.push(consumer);
-
       this.logger.log(`El consumidor con ID de grupo "${groupId}" ha comenzado a consumir el topic "${topic.topic}".`);
     } catch (error) {
       this.logger.error(`Se produjo un error al iniciar el consumidor con ID de grupo "${groupId}": ${error.message}`, error.stack);

@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: microservice-documenters-ternium-002
+  name: microservice-documenters-ternium-004
   namespace: default
   labels:
     app: api-microservice-documenters
-    version: 0.0.2
+    version: 0.0.4
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
   selector:
     matchLabels:
-      app: kafka-microservice-project-002
-  serviceName: "kafka-microservice-project-service-002"
+      app: kafka-microservice-project-004
+  serviceName: "kafka-microservice-project-service-004"
   template:
     metadata:
       labels:
-        app: kafka-microservice-project-002
+        app: kafka-microservice-project-004
     spec:
       containers:
-        - name: kafka-microservice-project-002
-          image: documenters-consumers-microservice:0.0.2
+        - name: kafka-microservice-project-004
+          image: documenters-consumers-microservice:0.0.4
           ports:
           - containerPort: 2023
           env:
@@ -31,20 +31,25 @@ spec:
             - name: MONGODB_URI
               valueFrom:
                 configMapKeyRef:
-                  name: cfgmicroservicedocumenters002
+                  name: cfgmicroservicedocumenters004
                   key: MONGODB_URI
             - name: KAFKA_URI
               valueFrom:
                 configMapKeyRef:
-                  name: cfgmicroservicedocumenters002
+                  name: cfgmicroservicedocumenters004
                   key: KAFKA_URI
             - name: PORT
               valueFrom:
                 configMapKeyRef:
-                  name: cfgmicroservicedocumenters002
+                  name: cfgmicroservicedocumenters004
                   key: PORT
             - name: DB_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: cfgmicroservicedocumenters002
+                  name: cfgmicroservicedocumenters004
                   key: DB_NAME
+            - name: NUM_MESSAGES_TO_LOG
+              valueFrom:
+                configMapKeyRef:
+                  name: cfgmicroservicedocumenters004
+                  key: NUM_MESSAGES_TO_LOG

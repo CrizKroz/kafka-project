@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StockDocument } from 'libs/helpers/src';
 import { Data, IStock } from './interfaces/stock.interface';
-import {StockEnum as topics} from './constants/stock.enum'
+import { StockEnum as topics } from './constants/stock.enum';
 @Injectable()
 export class StockConsumer implements OnModuleInit {
   private readonly logger = new Logger(ConsumerService.name);
@@ -15,26 +15,13 @@ export class StockConsumer implements OnModuleInit {
     private readonly repository: Model<StockDocument>,
   ) {}
 
-  async onModuleInit() {
-    this._consumer.consume(
-      'tpc-nca-stock',
-      {
-        topic: topics.tpc_nca_stock,
-      },
-      {
-        eachMessage: async ({ topic, partition, message }) => {
-          const messageString = message.value.toString();
-          const messageObj: IStock = JSON.parse(messageString);
-          this.logger.log(`se recibio mensaje con C_MATERIAL: ${messageObj.data.C_MATERIAL}`);
-          const { data } = messageObj;
-          await this.logicData(data);
-        },
-      },
-    );
-    
-  }
+  async onModuleInit() {}
 
-  async initConsumer(groupId:string, topic:string){
+  async initConsumer(groupId: string, topic: string) {
+    let messageCounter = 0;
+    let startTime: number;
+    let endTime: number;
+  
     await this._consumer.consume(
       groupId,
       {
@@ -44,37 +31,39 @@ export class StockConsumer implements OnModuleInit {
         eachMessage: async ({ topic, partition, message }) => {
           const messageString = message.value.toString();
           const messageObj: IStock = JSON.parse(messageString);
-
+  
           const { data } = messageObj;
-          
-        console.log(data);
-        
+          messageCounter++;
+          if (messageCounter === 1) {
+            startTime = performance.now();
+          }
+          if (messageCounter === parseInt(process.env.NUM_MESSAGES_TO_LOG)) {
+            endTime = performance.now();
+            const elapsedTime = endTime - startTime;
+            this.logger.log(`Se recibieron ${process.env.NUM_MESSAGES_TO_LOG} mensajes en ${elapsedTime} ms`);
+            messageCounter = 0;
+          }
           await this.logicData(data);
         },
       },
     );
   }
-
-
-
+  
 
   async logicData(data: Data) {
-    const {C_MATERIAL, C_ESTADO, CuentaStokAcanalados } = data;
-    let {C_ID_MATERIAL} = data
+    const { C_MATERIAL, C_ESTADO, CuentaStokAcanalados } = data;
+    let { C_ID_MATERIAL } = data;
     if (C_ESTADO === 'EN11' || CuentaStokAcanalados === 'NO') {
-      await this.repository.findOneAndDelete({ "data.C_MATERIAL":C_MATERIAL });
+      await this.repository.findOneAndDelete({ _id: C_MATERIAL },{projection:{_id:0}});
     } else {
       await this.repository.findOneAndUpdate(
-        { "data.C_MATERIAL":C_MATERIAL },
+        { _id: C_MATERIAL },
         {
           $set: {
-            "_id":C_MATERIAL,
-            "data.C_MATERIAL":C_MATERIAL,
-            "data.C_ID_MATERIAL":C_ID_MATERIAL.toString(),
-            "data.data_Inventario":data
-            // C_MATERIAL: C_MATERIAL,
-            // C_ID_MATERIAL: C_ID_MATERIAL,
-            // data_Inventario: data,
+            _id: C_MATERIAL,
+            'data.C_MATERIAL': C_MATERIAL,
+            'data.C_ID_MATERIAL': C_ID_MATERIAL.toString(),
+            'data.data_Inventario': data,
           },
         },
         { upsert: true, returnOriginal: false },
@@ -82,13 +71,14 @@ export class StockConsumer implements OnModuleInit {
     }
   }
 
-  async searchMessage(c_id_material: number){
-    
-    let myCollection =await this.repository.findOne({C_ID_MATERIAL:c_id_material}); 
+  async searchMessage(c_id_material: number) {
+    let myCollection = await this.repository.findOne({
+      C_ID_MATERIAL: c_id_material,
+    });
     return myCollection;
   }
 
-  async countMessage(){
+  async countMessage() {
     let count = await this.repository.count({});
     return count;
   }
