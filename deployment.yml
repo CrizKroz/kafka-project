@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: microservice-documenters-ternium-004
+  name: microservice-documenters-ternium-005
   namespace: default
   labels:
     app: api-microservice-documenters
-    version: 0.0.4
+    version: 0.0.5
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
   selector:
     matchLabels:
-      app: kafka-microservice-project-004
-  serviceName: "kafka-microservice-project-service-004"
+      app: kafka-microservice-project-005
+  serviceName: "kafka-microservice-project-service-005"
   template:
     metadata:
       labels:
-        app: kafka-microservice-project-004
+        app: kafka-microservice-project-005
     spec:
       containers:
-        - name: kafka-microservice-project-004
-          image: documenters-consumers-microservice:0.0.4
+        - name: kafka-microservice-project-005
+          image: documenters-consumers-microservice:0.0.5
           ports:
           - containerPort: 2023
           env:
@@ -48,8 +48,3 @@ spec:
                 configMapKeyRef:
                   name: cfgmicroservicedocumenters004
                   key: DB_NAME
-            - name: NUM_MESSAGES_TO_LOG
-              valueFrom:
-                configMapKeyRef:
-                  name: cfgmicroservicedocumenters004
-                  key: NUM_MESSAGES_TO_LOG

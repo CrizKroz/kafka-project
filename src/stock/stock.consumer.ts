@@ -15,14 +15,15 @@ export class StockConsumer implements OnModuleInit {
     private readonly repository: Model<StockDocument>,
   ) {}
 
-  async onModuleInit() {}
+  async onModuleInit() {
 
-  async initConsumer(groupId: string, topic: string) {
+  }
+
+  async initConsumer(groupId: string, topic: string, seconds:number) {
     let messageCounter = 0;
     let startTime: number;
-    let endTime: number;
-  
-    await this._consumer.consume(
+    const timeout = seconds * 1000;
+    return await this._consumer.consume(
       groupId,
       {
         topic: topic,
@@ -31,23 +32,35 @@ export class StockConsumer implements OnModuleInit {
         eachMessage: async ({ topic, partition, message }) => {
           const messageString = message.value.toString();
           const messageObj: IStock = JSON.parse(messageString);
-  
+      
           const { data } = messageObj;
-          messageCounter++;
-          if (messageCounter === 1) {
-            startTime = performance.now();
-          }
-          if (messageCounter === parseInt(process.env.NUM_MESSAGES_TO_LOG)) {
-            endTime = performance.now();
-            const elapsedTime = endTime - startTime;
-            this.logger.log(`Se recibieron ${process.env.NUM_MESSAGES_TO_LOG} mensajes en ${elapsedTime} ms`);
-            messageCounter = 0;
-          }
           await this.logicData(data);
+  
+          // Incrementamos el contador de mensajes
+          messageCounter++;
+          // Si es el primer mensaje, iniciamos el temporizador
+          if (!startTime) {
+            startTime = Date.now();
+          }
+  
+          // Si el tiempo transcurrido es mayor que el intervalo de tiempo deseado
+          if (Date.now() - startTime > timeout) {
+            // Calculamos la tasa de mensajes
+            const rate = messageCounter / (timeout / 1000);
+  
+            // Registramos la tasa de mensajes
+            this.logger.debug(`Procesados ${messageCounter} mensajes en ${timeout}ms (${rate.toFixed(2)} msg/s)`);
+  
+            // Reseteamos el contador de mensajes y el tiempo inicial
+            messageCounter = 0;
+            startTime = Date.now();
+          }
         },
       },
     );
   }
+  
+
   
 
   async logicData(data: Data) {

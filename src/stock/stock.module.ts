@@ -32,7 +32,7 @@ import { ConsumerService } from '../kafka/consumer/consumer.service';
 export class StockModule implements OnModuleInit {
   private readonly logger = new Logger(ConsumerService.name);
   async onModuleInit() {
-      this.logger.log(`Mongo URL: ${process.env.MONGODB_URI}`)
-      this.logger.log(`Nombre de base BD: ${process.env.DB_NAME}`)
+      this.logger.debug(`Mongo URL: ${process.env.MONGODB_URI}`)
+      this.logger.debug(`Nombre de base BD: ${process.env.DB_NAME}`)
   }
 }
